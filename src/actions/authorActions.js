@@ -20,6 +20,24 @@ const AuthorActions = {
             });
         });
     },
+    readAuthors: function(){
+        Dispatcher.dispatch({
+            actionType: 'read_authors_started'
+        });
+        axios.get(`http://localhost:3000/authors`)
+        .then(res => {
+            Dispatcher.dispatch({
+                actionType: 'read_authors_successful',
+                data:  res.data
+            });
+        })
+        .catch( (error) => {
+            console.log(error);
+            Dispatcher.dispatch({
+                actionType: 'read_authors_failure'
+            });
+        });
+    },
     updateAuthor: function(author){
        
         Dispatcher.dispatch({
@@ -39,24 +57,25 @@ const AuthorActions = {
             });
         });
     },
-    readAuthors: function(){
+    deleteAuthor: function(author){
+       
         Dispatcher.dispatch({
-            actionType: 'read_authors_started'
+            actionType: 'delete_author_started'
         });
-        axios.get(`http://localhost:3000/authors`)
+        axios.delete(`http://localhost:3000/authors/${author.authorId}`)
         .then(res => {
             Dispatcher.dispatch({
-                actionType: 'read_authors_successful',
-                data:  res.data
+                actionType: 'delete_author_successful',
+                data:  {author}
             });
         })
         .catch( (error) => {
             console.log(error);
             Dispatcher.dispatch({
-                actionType: 'read_authors_failure'
+                actionType: 'delete_author_failure'
             });
         });
-    }
+    },
 }
 
 module.exports = AuthorActions;

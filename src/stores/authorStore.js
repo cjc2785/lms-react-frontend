@@ -21,6 +21,11 @@ let _authorStore = {
             success: false,
             failure: false
         },
+        deleteState: {
+            pending: false,
+            success: false,
+            failure: false
+        },
         error: ''
     }
 };
@@ -67,6 +72,14 @@ class AuthorStoreClass extends EventEmitter {
             failure: false
         }
     }
+
+    resetDeleteState() {
+        _authorStore.author.deleteState = {
+            pending: false,
+            success: false,
+            failure: false
+        }
+    }
 }
 
 const AuthorStore = new AuthorStoreClass();
@@ -108,19 +121,19 @@ Dispatcher.register((action) => {
             AuthorStore.emitChange();
             break;
         case 'update_author_successful': {
-           
+
             AuthorStore.resetUpdateState();
             const { author } = action.data
-            const authorList  = _authorStore.author.authorList
-      
+            const authorList = _authorStore.author.authorList
+
             const idx = authorList.findIndex((
-                {authorId}) => authorId === author.authorId
+                { authorId }) => authorId === author.authorId
             )
-  
+
             authorList[idx] = author
-        
+
             _authorStore.author.updateState.success = true;
-          
+
             AuthorStore.emitChange();
             break;
         }
@@ -132,6 +145,31 @@ Dispatcher.register((action) => {
         case 'update_author_started':
             AuthorStore.resetUpdateState();
             _authorStore.author.updateState.pending = true;
+            AuthorStore.emitChange();
+            break;
+        case 'delete_author_successful': {
+
+            AuthorStore.resetDeleteState();
+            const { author } = action.data
+            const authorList = _authorStore.author.authorList
+
+            _authorStore.author.authorList = authorList.filter(
+                ({authorId}) => authorId !== author.authorId
+            )
+
+            _authorStore.author.deleteState.success = true;
+
+            AuthorStore.emitChange();
+            break;
+        }
+        case 'delete_author_failure':
+            AuthorStore.resetDeleteState();
+            _authorStore.author.deleteState.failure = true;
+            AuthorStore.emitChange();
+            break;
+        case 'delete_author_started':
+            AuthorStore.resetDeleteState();
+            _authorStore.author.deleteState.pending = true;
             AuthorStore.emitChange();
             break;
         default:

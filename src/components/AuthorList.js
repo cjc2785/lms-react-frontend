@@ -51,6 +51,7 @@ class AuthorRow extends React.Component {
             authorName: props.author.authorName
         }
         this.handleUpdateSubmit = this.handleUpdateSubmit.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
     }
 
     componentDidUpdate(prevProps) {
@@ -76,6 +77,10 @@ class AuthorRow extends React.Component {
          
             AuthorActions.updateAuthor(updatedAuthor)
         })
+    }
+
+    handleDelete() {
+        AuthorActions.deleteAuthor(this.props.author)
     }
 
     render() {
@@ -109,7 +114,8 @@ class AuthorRow extends React.Component {
                 </td>
                 <td>
                     <button type="button"
-                        className="btn btn-dark">X</button>
+                        className="btn btn-dark" 
+                        onClick={this.handleDelete}>X</button>
                 </td>
             </tr>
         )
