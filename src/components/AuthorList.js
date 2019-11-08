@@ -14,10 +14,10 @@ class AuthorCreator extends React.Component {
         }
     }
 
-  
+
     render() {
 
-        const { authorName } = this.state 
+        const { authorName } = this.state
 
         const {
             onSubmit,
@@ -26,21 +26,96 @@ class AuthorCreator extends React.Component {
 
         return (
             <div className="input-group mb-3">
-                <input type="text" 
-                    className="form-control" 
-                    onChange={({target}) => this.setState(
-                        {authorName: target.value})}
+                <input type="text"
+                    className="form-control"
+                    onChange={({ target }) => this.setState(
+                        { authorName: target.value })}
                     value={authorName}
-                    placeholder="Enter a name"/>
+                    placeholder="Enter a name" />
                 <div className="input-group-append">
-                    <button className="btn btn-success" 
+                    <button className="btn btn-success"
                         type="submit"
-                        onClick={() => onSubmit({authorName})}>OK</button>
+                        onClick={() => onSubmit({ authorName })}>OK</button>
                 </div>
             </div>
         )
     }
 }
+
+class AuthorRow extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            editing: false,
+            authorName: props.author.authorName
+        }
+        this.handleUpdateSubmit = this.handleUpdateSubmit.bind(this)
+    }
+
+    componentDidUpdate(prevProps) {
+
+        const { authorName } = this.props.author
+
+        if (authorName !== prevProps.author.authorName) {
+            
+            this.setState({ authorName })
+        }
+    }
+
+    handleUpdateSubmit() {
+
+        const { authorName } = this.state
+
+        const updatedAuthor = {
+            authorId: this.props.author.authorId,
+            authorName
+        }
+
+        this.setState({editing: false}, () => {
+         
+            AuthorActions.updateAuthor(updatedAuthor)
+        })
+    }
+
+    render() {
+
+        const { editing, authorName } = this.state
+        const { author } = this.props
+
+        return (
+            <tr key={author.authorId}>
+                <td> {author.authorId} </td>
+                <td> {editing ? (
+                    <input type="text"
+                        className="form-control"
+                        onChange={({ target }) => this.setState(
+                            { authorName: target.value })}
+                        value={authorName}
+                        placeholder="Enter a name" />
+                ) : authorName} </td>
+                <td>
+                    {editing ? (
+                        <button type="button"
+                            className="btn btn-primary"
+                            onClick={this.handleUpdateSubmit}>Done</button>
+                    ) : (
+                            <button type="button"
+                                className="btn btn-primary"
+                                onClick={
+                                    () => this.setState({ editing: true })
+                                }>Update</button>
+                        )}
+                </td>
+                <td>
+                    <button type="button"
+                        className="btn btn-dark">X</button>
+                </td>
+            </tr>
+        )
+    }
+}
+
 
 export class AuthorList extends React.Component {
 
@@ -59,10 +134,7 @@ export class AuthorList extends React.Component {
 
     createAuthorRow(author) {
         return (
-            <tr key={author.authorId}>
-                <td> {author.authorId} </td>
-                <td> {author.authorName} </td>
-            </tr>
+            <AuthorRow key={author.authorId} author={author} />
         );
     }
 
@@ -71,18 +143,18 @@ export class AuthorList extends React.Component {
     }
 
     handleCreatorSubmit(author) {
-        this.setState({isCreatorOpen: false}, () => {
-         
+        this.setState({ isCreatorOpen: false }, () => {
+
             AuthorActions.createAuthor(author)
         })
     }
 
     handleCreatorCancel() {
-        this.setState({isCreatorOpen: false})
+        this.setState({ isCreatorOpen: false })
     }
 
     handleAddClick() {
-        this.setState({isCreatorOpen: true})
+        this.setState({ isCreatorOpen: true })
     }
 
     render() {
@@ -90,7 +162,7 @@ export class AuthorList extends React.Component {
         let content = '';
 
         const {
-            isCreatorOpen 
+            isCreatorOpen
         } = this.state
 
         if (this.props.author.readState.pending) {
@@ -138,9 +210,9 @@ export class AuthorList extends React.Component {
                         +
                     </button>
                 ) : (
-                    <AuthorCreator onSubmit={this.handleCreatorSubmit}
-                        onCancel={this.handleCreatorCancel}/>
-                )}
+                        <AuthorCreator onSubmit={this.handleCreatorSubmit}
+                            onCancel={this.handleCreatorCancel} />
+                    )}
 
                 {content}
             </div>

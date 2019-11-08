@@ -20,6 +20,25 @@ const AuthorActions = {
             });
         });
     },
+    updateAuthor: function(author){
+       
+        Dispatcher.dispatch({
+            actionType: 'update_author_started'
+        });
+        axios.put(`http://localhost:3000/authors`, author)
+        .then(res => {
+            Dispatcher.dispatch({
+                actionType: 'update_author_successful',
+                data:  {author}
+            });
+        })
+        .catch( (error) => {
+            console.log(error);
+            Dispatcher.dispatch({
+                actionType: 'update_author_failure'
+            });
+        });
+    },
     readAuthors: function(){
         Dispatcher.dispatch({
             actionType: 'read_authors_started'

@@ -11,6 +11,11 @@ let _authorStore = {
             success: false,
             failure: false
         },
+        updateState: {
+            pending: false,
+            success: false,
+            failure: false
+        },
         readState: {
             pending: false,
             success: false,
@@ -41,6 +46,14 @@ class AuthorStoreClass extends EventEmitter {
 
     resetCreateState() {
         _authorStore.author.createState = {
+            pending: false,
+            success: false,
+            failure: false
+        }
+    }
+
+    resetUpdateState() {
+        _authorStore.author.updateState = {
             pending: false,
             success: false,
             failure: false
@@ -92,6 +105,33 @@ Dispatcher.register((action) => {
         case 'create_author_started':
             AuthorStore.resetCreateState();
             _authorStore.author.createState.pending = true;
+            AuthorStore.emitChange();
+            break;
+        case 'update_author_successful': {
+           
+            AuthorStore.resetUpdateState();
+            const { author } = action.data
+            const authorList  = _authorStore.author.authorList
+      
+            const idx = authorList.findIndex((
+                {authorId}) => authorId === author.authorId
+            )
+  
+            authorList[idx] = author
+        
+            _authorStore.author.updateState.success = true;
+          
+            AuthorStore.emitChange();
+            break;
+        }
+        case 'update_author_failure':
+            AuthorStore.resetUpdateState();
+            _authorStore.author.updateState.failure = true;
+            AuthorStore.emitChange();
+            break;
+        case 'update_author_started':
+            AuthorStore.resetUpdateState();
+            _authorStore.author.updateState.pending = true;
             AuthorStore.emitChange();
             break;
         default:
