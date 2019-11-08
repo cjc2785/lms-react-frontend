@@ -3,6 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AuthorActions from '../actions/authorActions';
+import { create } from 'domain';
 
 
 class AuthorCreator extends React.Component {
@@ -171,6 +172,10 @@ export class AuthorList extends React.Component {
             isCreatorOpen
         } = this.state
 
+        const {createState} = this.props.author
+        console.log(this.props.author.createState, this.props.author, createState, 'yes')
+
+
         if (this.props.author.readState.pending) {
             content = (
                 <div className="d-flex justify-content-center">
@@ -210,7 +215,19 @@ export class AuthorList extends React.Component {
             <div className='container'>
 
                 <h1>Authors</h1>
-                {!isCreatorOpen ? (
+                { createState.failure &&                 (
+                    <div className="alert alert-danger" role="alert">
+                        Create author failed!
+                </div>
+                )}
+                { createState.pending && (
+                <div className="">
+                    <div className="spinner-border" role="status">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            )}
+                {!createState.pending && (!isCreatorOpen ? (
                     <button type="button"
                         className="btn btn-primary" onClick={this.handleAddClick}>
                         +
@@ -218,7 +235,7 @@ export class AuthorList extends React.Component {
                 ) : (
                         <AuthorCreator onSubmit={this.handleCreatorSubmit}
                             onCancel={this.handleCreatorCancel} />
-                    )}
+                    ))}
 
                 {content}
             </div>

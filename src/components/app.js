@@ -25,12 +25,27 @@ export class App extends React.Component{
                 },
                 error: ''
             },
-            author:{
+            author: {
                 authorList: [],
-                readState:{
-                    pending:false,
-                    success:false,
-                    failure:false
+                createState: {
+                    pending: false,
+                    success: false,
+                    failure: false
+                },
+                updateState: {
+                    pending: false,
+                    success: false,
+                    failure: false
+                },
+                readState: {
+                    pending: false,
+                    success: false,
+                    failure: false
+                },
+                deleteState: {
+                    pending: false,
+                    success: false,
+                    failure: false
                 },
                 error: ''
             }
