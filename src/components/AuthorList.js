@@ -2,29 +2,28 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import BookActions from '../actions/bookActions';
+import AuthorActions from '../actions/authorActions';
 
-export class BookList extends React.Component{
+export class AuthorList extends React.Component{
 
-    createBookRow(book){
+    createAuthorRow(author){
         return (
-            <tr key={book.bookId}>
-                <td> {book.bookId} </td>
-                <td> {book.title} </td>
-                <td> {book.authorId} </td>
+            <tr key={author.authorId}>
+                <td> {author.authorId} </td>
+                <td> {author.authorName} </td>
             </tr>
         );
     }
 
     componentDidMount(){
-        BookActions.readBooks();
+        AuthorActions.readAuthors();
     }
 
     render() {
         
         let content = '';
         
-        if(this.props.book.readState.pending){
+        if(this.props.author.readState.pending){
             content = (
                 <div className="d-flex justify-content-center">
                     <div className="spinner-border" role="status">
@@ -35,42 +34,41 @@ export class BookList extends React.Component{
         }
         
 
-        if(this.props.book.readState.success){
+        if(this.props.author.readState.success){
             content = 
                 (<table className="table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Title</th>
-                            <th>Author</th>
+                            <th>Name</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.book.bookList.map(this.createBookRow, this)}
+                        {this.props.author.authorList.map(this.createAuthorRow, this)}
                     </tbody>    
                 </table>)
         }
 
-        if(this.props.book.readState.failure){
+        if(this.props.author.readState.failure){
             content = 
             (
                 <div className="alert alert-danger" role="alert">
-                    Error while loading books!
+                    Error while loading authors!
                 </div>
             )
         }
 
         return(
             <div>
-                <h1>Books</h1>
+                <h1>Authors</h1>
                 {content}
             </div>
         );
     }
 }
 
-BookList.propTypes = {
-    book: PropTypes.object.isRequired
+AuthorList.propTypes = {
+    author: PropTypes.object.isRequired
 };
 
 

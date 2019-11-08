@@ -16,6 +16,7 @@ export class Header extends React.Component{
                         </li>
                         <li className="list-inline-item"><Link to="/" replace>Home</Link></li>
                         <li className="list-inline-item"><Link to="/books" replace>Books</Link></li>
+                        <li className="list-inline-item"><Link to="/authors" replace>Authors</Link></li>
                     </ul>
                 </div>
             </nav>
