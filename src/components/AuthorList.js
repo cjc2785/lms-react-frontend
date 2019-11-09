@@ -55,16 +55,6 @@ class AuthorRow extends React.Component {
         this.handleDelete = this.handleDelete.bind(this)
     }
 
-    componentDidUpdate(prevProps) {
-
-        const { authorName } = this.props.author
-
-        if (authorName !== prevProps.author.authorName) {
-            
-            this.setState({ authorName })
-        }
-    }
-
     handleUpdateSubmit() {
 
         const { authorName } = this.state
@@ -74,8 +64,8 @@ class AuthorRow extends React.Component {
             authorName
         }
 
-        this.setState({editing: false}, () => {
-         
+        this.setState({ editing: false }, () => {
+
             AuthorActions.updateAuthor(updatedAuthor)
         })
     }
@@ -87,7 +77,18 @@ class AuthorRow extends React.Component {
     render() {
 
         const { editing, authorName } = this.state
-        const { author } = this.props
+        const { author, updateState: sharedUpdateState, deleteState: sharedDeleteState } = this.props
+
+        const updateState = sharedUpdateState.id === author.authorId ?
+            sharedUpdateState :
+            DEFAULT_STATE
+
+        const deleteState = sharedDeleteState.id === author.authorId ?
+            sharedDeleteState :
+            DEFAULT_STATE
+
+        const updateable = sharedUpdateState.id === author.authorId || !sharedUpdateState.pending
+        const deleteable = sharedDeleteState.id === author.authorId || !sharedDeleteState.pending
 
         return (
             <tr key={author.authorId}>
@@ -101,28 +102,62 @@ class AuthorRow extends React.Component {
                         placeholder="Enter a name" />
                 ) : authorName} </td>
                 <td>
-                    {editing ? (
+                    {!updateState.pending && (editing ? (
                         <button type="button"
                             className="btn btn-primary"
+                            disabled={!updateable}
                             onClick={this.handleUpdateSubmit}>Done</button>
                     ) : (
                             <button type="button"
                                 className="btn btn-primary"
+                                disabled={!updateable}
                                 onClick={
                                     () => this.setState({ editing: true })
                                 }>Update</button>
-                        )}
+                        ))}
+                    {updateState.failure && (
+                        <div className="alert alert-danger" role="alert">
+                            Update author failed!
+                        </div>
+                    )}
+                    {updateState.pending && (
+                        <div className="">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    )}
                 </td>
                 <td>
-                    <button type="button"
-                        className="btn btn-dark" 
-                        onClick={this.handleDelete}>X</button>
+                    {!deleteState.pending && (
+                        <button type="button"
+                            className="btn btn-dark"
+                            disabled={!deleteable}
+                            onClick={this.handleDelete}>X</button>
+                    )}
+                    {deleteState.failure && (
+                        <div className="alert alert-danger" role="alert">
+                            Delete author failed!
+                        </div>
+                    )}
+                    {deleteState.pending && (
+                        <div className="">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    )}
                 </td>
             </tr>
         )
     }
 }
 
+const DEFAULT_STATE = {
+    pending: false,
+    failure: false,
+    success: false
+}
 
 export class AuthorList extends React.Component {
 
@@ -140,8 +175,16 @@ export class AuthorList extends React.Component {
     }
 
     createAuthorRow(author) {
+
+        const { updateState, deleteState } = this.props.author
+
+        const { authorId: id } = author
+
         return (
-            <AuthorRow key={author.authorId} author={author} />
+            <AuthorRow key={id}
+                author={author}
+                updateState={updateState}
+                deleteState={deleteState} />
         );
     }
 
@@ -172,8 +215,8 @@ export class AuthorList extends React.Component {
             isCreatorOpen
         } = this.state
 
-        const {createState} = this.props.author
-        console.log(this.props.author.createState, this.props.author, createState, 'yes')
+        const { createState } = this.props.author
+
 
 
         if (this.props.author.readState.pending) {
@@ -215,18 +258,18 @@ export class AuthorList extends React.Component {
             <div className='container'>
 
                 <h1>Authors</h1>
-                { createState.failure &&                 (
+                {createState.failure && (
                     <div className="alert alert-danger" role="alert">
                         Create author failed!
                 </div>
                 )}
-                { createState.pending && (
-                <div className="">
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
+                {createState.pending && (
+                    <div className="">
+                        <div className="spinner-border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
                 {!createState.pending && (!isCreatorOpen ? (
                     <button type="button"
                         className="btn btn-primary" onClick={this.handleAddClick}>

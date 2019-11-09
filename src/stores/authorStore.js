@@ -12,6 +12,7 @@ let _authorStore = {
             failure: false
         },
         updateState: {
+            id: 0,
             pending: false,
             success: false,
             failure: false
@@ -22,6 +23,7 @@ let _authorStore = {
             failure: false
         },
         deleteState: {
+            id: 0,
             pending: false,
             success: false,
             failure: false
@@ -59,6 +61,7 @@ class AuthorStoreClass extends EventEmitter {
 
     resetUpdateState() {
         _authorStore.author.updateState = {
+            id: 0,
             pending: false,
             success: false,
             failure: false
@@ -75,6 +78,7 @@ class AuthorStoreClass extends EventEmitter {
 
     resetDeleteState() {
         _authorStore.author.deleteState = {
+            id: 0,
             pending: false,
             success: false,
             failure: false
@@ -103,23 +107,24 @@ Dispatcher.register((action) => {
             _authorStore.author.readState.pending = true;
             AuthorStore.emitChange();
             break;
-        case 'create_author_successful':
+        case 'create_author_successful': 
             AuthorStore.resetCreateState();
             _authorStore.author.authorList.push(action.data.author)
             _authorStore.author.authorList.sort((a, b) => a.authorId > b.authorId ? 1 : - 1);
             _authorStore.author.createState.success = true;
             AuthorStore.emitChange();
             break;
-        case 'create_author_failure':
+        case 'create_author_failure': 
             AuthorStore.resetCreateState();
             _authorStore.author.createState.failure = true;
             AuthorStore.emitChange();
             break;
-        case 'create_author_started':
+        case 'create_author_started': {
             AuthorStore.resetCreateState();
             _authorStore.author.createState.pending = true;
             AuthorStore.emitChange();
             break;
+        }
         case 'update_author_successful': {
 
             AuthorStore.resetUpdateState();
@@ -133,20 +138,27 @@ Dispatcher.register((action) => {
             authorList[idx] = author
 
             _authorStore.author.updateState.success = true;
+            _authorStore.author.updateState.id = author.authorId;
 
             AuthorStore.emitChange();
             break;
         }
-        case 'update_author_failure':
+        case 'update_author_failure': {
             AuthorStore.resetUpdateState();
+            const { author } = action.data
             _authorStore.author.updateState.failure = true;
+            _authorStore.author.updateState.id = author.authorId;
             AuthorStore.emitChange();
             break;
-        case 'update_author_started':
+        }
+        case 'update_author_started': {
             AuthorStore.resetUpdateState();
+            const { author } = action.data
             _authorStore.author.updateState.pending = true;
+            _authorStore.author.updateState.id = author.authorId;
             AuthorStore.emitChange();
             break;
+        }
         case 'delete_author_successful': {
 
             AuthorStore.resetDeleteState();
@@ -157,21 +169,28 @@ Dispatcher.register((action) => {
                 ({authorId}) => authorId !== author.authorId
             )
 
+            _authorStore.author.deleteState.id = author.authorId;
             _authorStore.author.deleteState.success = true;
 
             AuthorStore.emitChange();
             break;
         }
-        case 'delete_author_failure':
+        case 'delete_author_failure': {
             AuthorStore.resetDeleteState();
+            const { author } = action.data
+            _authorStore.author.deleteState.id = author.authorId;
             _authorStore.author.deleteState.failure = true;
             AuthorStore.emitChange();
             break;
-        case 'delete_author_started':
+        }
+        case 'delete_author_started': {
             AuthorStore.resetDeleteState();
+            const { author } = action.data
+            _authorStore.author.deleteState.id = author.authorId;
             _authorStore.author.deleteState.pending = true;
             AuthorStore.emitChange();
             break;
+        }
         default:
             return;
     }

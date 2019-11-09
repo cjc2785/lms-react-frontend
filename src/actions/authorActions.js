@@ -41,7 +41,8 @@ const AuthorActions = {
     updateAuthor: function(author){
        
         Dispatcher.dispatch({
-            actionType: 'update_author_started'
+            actionType: 'update_author_started',
+            data: {author}
         });
         axios.put(`http://localhost:3000/authors`, author)
         .then(res => {
@@ -53,14 +54,16 @@ const AuthorActions = {
         .catch( (error) => {
             console.log(error);
             Dispatcher.dispatch({
-                actionType: 'update_author_failure'
+                actionType: 'update_author_failure',
+                data: {author}
             });
         });
     },
     deleteAuthor: function(author){
        
         Dispatcher.dispatch({
-            actionType: 'delete_author_started'
+            actionType: 'delete_author_started',
+            data: {author}
         });
         axios.delete(`http://localhost:3000/authors/${author.authorId}`)
         .then(res => {
@@ -72,7 +75,8 @@ const AuthorActions = {
         .catch( (error) => {
             console.log(error);
             Dispatcher.dispatch({
-                actionType: 'delete_author_failure'
+                actionType: 'delete_author_failure',
+                data: {author}
             });
         });
     },
