@@ -1,8 +1,8 @@
 "use strict"
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import BookActions from '../actions/bookActions';
+import React from 'react'
+import PropTypes from 'prop-types'
+import BookActions from '../actions/bookActions'
 
 export class BookList extends React.Component{
 
@@ -22,7 +22,7 @@ export class BookList extends React.Component{
 
     render() {
         
-        let content = '';
+        let content = ''
         
         if(this.props.book.readState.pending){
             content = (
@@ -71,7 +71,6 @@ export class BookList extends React.Component{
 
 BookList.propTypes = {
     book: PropTypes.object.isRequired
-};
-
+}
 
 
