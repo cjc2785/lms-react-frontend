@@ -85,6 +85,7 @@ export class AuthorList extends React.Component {
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th/>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,8 +105,9 @@ export class AuthorList extends React.Component {
 
         return (
             <div className='container'>
-
-                <h1>Authors</h1>
+                <div className='d-flex align-items-center'>
+                <h1 className='m-0'>Authors</h1>
+                <div className="ml-4">
                 {createState.failure && (
                     <div className="alert alert-danger"
                         role="alert">
@@ -130,7 +132,8 @@ export class AuthorList extends React.Component {
                         <AuthorCreator onSubmit={this.handleCreatorSubmit}
                             onCancel={this.handleCreatorCancel} />
                     ))}
-
+                    </div>
+                </div>
                 {content}
             </div>
         )

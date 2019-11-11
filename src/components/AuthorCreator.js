@@ -23,7 +23,7 @@ export default class AuthorCreator extends React.Component {
         } = this.props
 
         return (
-            <div className="input-group mb-3">
+            <div className="input-group ">
                 <input type="text"
                     className="form-control"
                     onChange={({ target }) => this.setState(
